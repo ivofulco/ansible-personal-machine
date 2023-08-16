@@ -1,0 +1,26 @@
+---
+- name: Install Software on Ubuntu Machines
+  hosts: your_inventory_group_name  # Replace with your inventory group name
+  become: yes
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install packages
+      apt:
+        name: ['code', 'docker.io', 'dbeaver-ce', 'lens']
+        state: latest
+
+    - name: Add user to docker group (optional)
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
+    - name: Reboot the machines
+      command: shutdown -r now
+      async: 0
+      poll: 0
+      ignore_errors: true
